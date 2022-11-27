@@ -1,0 +1,29 @@
+{
+  "name": "Destiny status",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "manifest_version": 3,
+  "host_permissions": [
+    "https://www.youtube.com/*"
+  ],
+  "version": "0.1",
+  "description": "Live status tracker for the livestreamer Destiny",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "notifications",
+    "alarms",
+    "storage"
+  ],
+  "icons": {
+    "128": "images/dgg_icon_128.png"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}

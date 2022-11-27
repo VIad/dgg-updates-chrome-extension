@@ -1,0 +1,10 @@
+body {
+    width: 15rem;
+    height: 10rem;
+    background-image: url("images/popup_background.png");
+}
+
+label {
+    color: white;
+    font-size: 20px;
+}

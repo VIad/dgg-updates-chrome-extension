@@ -1,0 +1,66 @@
+body {
+  width: 22rem;
+  height: 15rem;
+  background-image: url("images/popup_background.png");
+}
+
+#image {
+  margin-right: 2rem;
+}
+
+#join {
+  visibility: hidden;
+  background-color: #007dfe;
+  color: white;
+  font-size: 17px;
+  width: 60%;
+}
+
+h1 {
+  color: white;
+}
+
+.socials {
+  padding-top: 15px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.socials-item {
+  color: white;
+  margin: 0px 50px 0px 50px;
+}
+
+.socials-item:hover {
+  -webkit-filter: brightness(50%);
+  -webkit-transition: all .5s ease;
+  -moz-transition: all .5s ease;
+  -o-transition: all .5s ease;
+  -ms-transition: all .5s ease;
+  transition: all .5s ease;
+  cursor: pointer;
+}
+
+#join:hover {
+  background-color: #007dfe;
+  -webkit-filter: brightness(50%);
+  -webkit-transition: all .5s ease;
+  -moz-transition: all .5s ease;
+  -o-transition: all .5s ease;
+  -ms-transition: all .5s ease;
+  transition: all .5s ease;
+  cursor: pointer;
+}
+
+#streamTitle {
+  color: white;
+  font-size: 15px;
+  width: 100%;
+  visibility: hidden;
+}
+
+* {
+  font-family: "Roboto", sans-serif;
+}
