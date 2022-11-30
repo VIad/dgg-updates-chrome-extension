@@ -1,6 +1,13 @@
 
-chrome.runtime.sendMessage("statusNotify", (response) => {
+let docId = (id) => document.getElementById(id)
 
+; (function connect() {
+    chrome.runtime.connect({ name: 'keepAlive' })
+        .onDisconnect.addListener(connect);
+})();
+
+chrome.runtime.sendMessage("statusNotify", (response) => {
+    
     chrome.storage.sync.get(['currentStatus'], (result) => {
         if (result.currentStatus.live) {
             docId("status").innerHTML = "[Live] 🔴"
@@ -16,8 +23,6 @@ chrome.runtime.sendMessage("statusNotify", (response) => {
 
 })
 
-let docId = (id) => document.getElementById(id)
-
 docId("yt").addEventListener("click", () => {
     chrome.tabs.create({ url: "https://youtube.com/@destiny" })
 })
@@ -32,4 +37,8 @@ docId("reddit").addEventListener("click", () => {
 
 docId("join").addEventListener("click", () => {
     chrome.tabs.create({ url: "https://www.destiny.gg/bigscreen" })
+})
+
+docId("settings").addEventListener("click", () => {
+    chrome.runtime.openOptionsPage(() => {})
 })

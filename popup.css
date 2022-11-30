@@ -33,6 +33,23 @@ h1 {
   margin: 0px 50px 0px 50px;
 }
 
+#main-container {
+  display: flex; 
+  flex-direction:row; 
+  justify-content:center; 
+  align-items: center;
+}
+
+#settings:hover {
+  -webkit-filter: brightness(50%);
+  -webkit-transition: all .5s ease;
+  -moz-transition: all .5s ease;
+  -o-transition: all .5s ease;
+  -ms-transition: all .5s ease;
+  transition: all .5s ease;
+  cursor: pointer;
+}
+
 .socials-item:hover {
   -webkit-filter: brightness(50%);
   -webkit-transition: all .5s ease;

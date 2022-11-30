@@ -24,6 +24,17 @@ let fetchStatus = async () => {
       currentStatus.live = result.includes("hqdefault_live.jpg")
       if (currentStatus.live)
         determineStreamTitle(result)
+
+      chrome.storage.sync.get(['notificationOption'], (notificationOption) => {
+        checkStatusChanged(notificationOption)
+        applyIcon()
+        cachedStatus.setTo(currentStatus)
+        updateStorage()
+      })
+    })
+    .catch((error) => {
+      currentStatus.live = false
+      currentStatus.streamTitle = ''
       checkStatusChanged()
       applyIcon()
       cachedStatus.setTo(currentStatus)
@@ -31,28 +42,30 @@ let fetchStatus = async () => {
     })
 }
 
-let checkStatusChanged = () => {
-  if (currentStatus.live !== cachedStatus.live) {
-    let message = 'Destiny is now ' + (currentStatus.live ? 'live' : 'offline')
-    message += currentStatus.live ? ', title: ' + currentStatus.streamTitle : ''
-    chrome.notifications.create(randomId(3), {
-      type: 'basic',
-      iconUrl: 'images/dgg_icon_128.png',
-      title: 'PEPE WINS',
-      message: message,
-      priority: 2
-    })
-  }
+let checkStatusChanged = (notificationOption) => {
+    const notificationLevel = notificationOption['notificationOption'] || 'all'
+    if (currentStatus.live !== cachedStatus.live) {
+      if (notificationLevel !== 'none') {
+        const message = 'DESTINY IS NOW ' + (currentStatus.live ? 'LIVE' : 'OFFLINE')
+        notifyUser(message, currentStatus.live ? currentStatus.streamTitle : '')
+      }
+    }
 
-  if (currentStatus.streamTitle !== cachedStatus.streamTitle && cachedStatus.live) {
-    chrome.notifications.create(randomId(3), {
-      type: 'basic',
-      iconUrl: 'images/dgg_icon_128.png',
-      title: 'PEPE WINS',
-      message: 'Now streaming: ' + (currentStatus.streamTitle),
-      priority: 2
-    })
-  }
+    if (currentStatus.streamTitle !== cachedStatus.streamTitle && cachedStatus.live && currentStatus.streamTitle != '') {
+      if (notificationLevel === 'all') {
+        notifyUser('NOW STREAMING', currentStatus.streamTitle)
+      }
+    }
+}
+
+let notifyUser = (title, str) => {
+  chrome.notifications.create(randomId(3), {
+    type: 'basic',
+    iconUrl: 'images/dgg_icon.png',
+    title: title,
+    message: str,
+    priority: 2
+  })
 }
 
 let determineStreamTitle = (pageHtml) => {
@@ -65,10 +78,19 @@ let determineStreamTitle = (pageHtml) => {
 }
 
 let applyIcon = () => {
-  if (currentStatus.live)
-    chrome.action.setIcon({ path: { 128: 'images/dgg_icon_live_128.png' } })
-  else
-    chrome.action.setIcon({ path: { 128: 'images/dgg_icon_offline_128.png' } })
+  if (currentStatus.live) {
+    chrome.action.setBadgeText({ text: "​" }, () => { })
+    chrome.action.setBadgeBackgroundColor(
+      { color: '#00FF00' },  // Green
+      () => { },
+    );
+  } else {
+    chrome.action.setBadgeText({ text: "​" }, () => { })
+    chrome.action.setBadgeBackgroundColor(
+      { color: '#F00' },  // Red
+      () => { },
+    );
+  }
 }
 
 let updateStorage = () => {
@@ -78,14 +100,14 @@ let updateStorage = () => {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message === "statusNotify") {
-    sendResponse('')
+    sendResponse('') // Don't care, this is just to trigger sync storage fetch of title and status for popup
   }
   return true
 })
 
 let unicodeToChar = (text) => {
   return text.replace(/\\u[\dA-F]{4}/gi,
-    function (match) {
+    (match) => {
       return String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16));
     });
 }
@@ -101,12 +123,13 @@ let randomId = (length) => {
 }
 
 let setup = async () => {
+
   await fetchStatus()
 
   const alarmDetails = { delayInMinutes: 0.2, periodInMinutes: 0.5 }
 
   if (currentStatus.live) {
-    alarmDetails.periodInMinutes = 1 // Performance, trigger check only once every 2 minutes
+    alarmDetails.periodInMinutes = 1 // Performance, trigger check only once every 1 minute
   }
 
   chrome.alarms.create("updateAlarm", alarmDetails);
@@ -124,3 +147,33 @@ chrome.runtime.onStartup.addListener(() => {
 chrome.runtime.onInstalled.addListener((details) => {
   setup()
 })
+
+chrome.action.onClicked.addListener((tab) => {
+  setup()
+});
+
+
+const onUpdate = (tabId, info, tab) => /^https?:/.test(info.url) && findTab([tab]);
+findTab();
+chrome.runtime.onConnect.addListener(port => {
+  if (port.name === 'keepAlive') {
+    setTimeout(() => port.disconnect(), 250e3);
+    port.onDisconnect.addListener(() => findTab());
+  }
+});
+async function findTab(tabs) {
+  if (chrome.runtime.lastError) { /* tab was closed before setTimeout ran */ }
+  for (const { id: tabId } of tabs || await chrome.tabs.query({ url: '*://*/*' })) {
+    try {
+      await chrome.scripting.executeScript({ target: { tabId }, func: connect });
+      chrome.tabs.onUpdated.removeListener(onUpdate);
+      return;
+    } catch (e) { }
+  }
+  chrome.tabs.onUpdated.addListener(onUpdate);
+}
+function connect() {
+  chrome.runtime.connect({ name: 'keepAlive' })
+    .onDisconnect.addListener(connect);
+}
+
