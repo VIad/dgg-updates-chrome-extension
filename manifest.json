@@ -1,5 +1,5 @@
 {
-  "name": "Destiny status",
+  "name": "Destiny.gg Status",
   "action": {
     "default_popup": "popup.html"
   },
@@ -10,7 +10,6 @@
   "version": "0.1",
   "description": "Live status tracker for the livestreamer Destiny",
   "permissions": [
-    "activeTab",
     "scripting",
     "notifications",
     "alarms",

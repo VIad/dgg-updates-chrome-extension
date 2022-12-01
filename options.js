@@ -3,7 +3,7 @@ document.getElementById('save').addEventListener('click', () => {
 
     var status = document.getElementById('status');
     status.textContent = 'Saved preference: '+notifications;
-    setTimeout(function() {
+    setTimeout(() => {
       status.textContent = '';
     }, 750);
 
