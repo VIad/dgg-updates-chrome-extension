@@ -17,16 +17,14 @@ const currentStatus = new Status(false, '')
 const cachedStatus = new Status(false, '')
 
 let fetchStatus = async () => {
-  cachedStatus.setTo(currentStatus)
   return fetch('https://www.youtube.com/@destiny')
     .then(r => r.text())
     .then(result => {
       currentStatus.live = result.includes("hqdefault_live.jpg")
       if (currentStatus.live)
         determineStreamTitle(result)
-
-      chrome.storage.sync.get(['notificationOption'], (notificationOption) => {
-        checkStatusChanged(notificationOption)
+      chrome.storage.sync.get(['notificationOption'], (res) => {
+        checkStatusChanged(res ? (res['notificationOption'] || 'all') : 'all')
         applyIcon()
         cachedStatus.setTo(currentStatus)
         updateStorage()
@@ -43,16 +41,15 @@ let fetchStatus = async () => {
 }
 
 let checkStatusChanged = (notificationOption) => {
-    const notificationLevel = notificationOption['notificationOption'] || 'all'
     if (currentStatus.live !== cachedStatus.live) {
-      if (notificationLevel !== 'none') {
-        const message = 'DESTINY IS NOW ' + (currentStatus.live ? 'LIVE' : 'OFFLINE')
+      if (notificationOption !== 'none') {
+        const message = 'DESTINY IS NOW ' + (currentStatus.live ? 'LIVE' : 'OFFLINE' )
         notifyUser(message, currentStatus.live ? currentStatus.streamTitle : '')
       }
     }
 
     if (currentStatus.streamTitle !== cachedStatus.streamTitle && cachedStatus.live && currentStatus.streamTitle != '') {
-      if (notificationLevel === 'all') {
+      if (notificationOption === 'all') {
         notifyUser('NOW STREAMING', currentStatus.streamTitle)
       }
     }
@@ -147,11 +144,6 @@ chrome.runtime.onStartup.addListener(() => {
 chrome.runtime.onInstalled.addListener((details) => {
   setup()
 })
-
-chrome.action.onClicked.addListener((tab) => {
-  setup()
-});
-
 
 const onUpdate = (tabId, info, tab) => /^https?:/.test(info.url) && findTab([tab]);
 findTab();
