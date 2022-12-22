@@ -1,28 +1,29 @@
 {
   "name": "Destiny.gg Status",
-  "action": {
-    "default_popup": "popup.html"
-  },
+  "version": "2022.12.1",
+  "description": "Live status tracker for the livestreamer Destiny",
   "manifest_version": 3,
+  "action": {
+    "default_popup": "./html/popup.html"
+  },
   "host_permissions": [
     "<all_urls>"
   ],
-  "version": "0.1",
-  "description": "Live status tracker for the livestreamer Destiny",
   "permissions": [
     "scripting",
     "notifications",
     "alarms",
-    "storage"
+    "storage",
+    "management"
   ],
   "icons": {
     "128": "images/dgg_icon.png"
   },
   "options_ui": {
-    "page": "options.html",
+    "page": "html/options.html",
     "open_in_tab": false
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "./js/background.js"
   }
 }

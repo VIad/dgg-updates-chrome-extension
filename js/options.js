@@ -7,7 +7,7 @@ document.getElementById('save').addEventListener('click', () => {
       status.textContent = '';
     }, 750);
 
-    chrome.storage.sync.set({
+    chrome.storage.local.set({
          notificationOption: notifications
     }, () => {});
 });

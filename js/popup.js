@@ -6,18 +6,18 @@ let docId = (id) => document.getElementById(id)
         .onDisconnect.addListener(connect);
 })();
 
-chrome.runtime.sendMessage("statusNotify", (response) => {
+chrome.runtime.sendMessage("dgg-status-notify", (response) => {
     
-    chrome.storage.sync.get(['currentStatus'], (result) => {
+    chrome.storage.local.get(['currentStatus'], (result) => {
         if (result.currentStatus.live) {
             docId("status").innerHTML = "[Live] 🔴"
             docId("join").style.visibility = "visible"
             docId("streamTitle").innerHTML = result.currentStatus.streamTitle
             docId("streamTitle").style.visibility = "visible"
-            docId("image").src = "images/dggl_smol.png"
+            docId("image").src = "../images/dggl_smol.png"
         } else {
             docId("status").innerHTML = "[Offline]"
-            docId("image").src = "images/dggl_smol_sleeping.png"
+            docId("image").src = "../images/dggl_smol_sleeping.png"
         }
     });
 

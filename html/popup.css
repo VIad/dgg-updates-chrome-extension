@@ -1,7 +1,7 @@
 body {
   width: 22rem;
   height: 15rem;
-  background-image: url("images/popup_background.png");
+  background-image: url("../images/popup_background.png");
 }
 
 #image {
@@ -38,6 +38,10 @@ h1 {
   flex-direction:row; 
   justify-content:center; 
   align-items: center;
+}
+
+#settings {
+  position: absolute;
 }
 
 #settings:hover {
