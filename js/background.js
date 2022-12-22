@@ -27,8 +27,6 @@ let fetchStatus = async (isInitial) => {
             if (currentStatus.live) {
               determineStreamTitle(result)
             }
-            currentStatus.live = true
-            currentStatus.streamTitle = 'Doing show with emilywking and a couple others from 5-6, then short stream (moving tonight)'
             checkStatusChanged(storage ? (storage['notificationOption'] || 'all') : 'all')
             applyIcon()
             cachedStatus.setTo(currentStatus)
@@ -197,6 +195,13 @@ chrome.tabs.onActivated.addListener(async info => {
 
 })
 
+
+/*
+ * Keep V3 extension persistent
+ * Hack borrowed from here: https://stackoverflow.com/questions/66618136/persistent-service-worker-in-chrome-extension
+ * 
+ * Other part in popup.js
+ */
 const onUpdate = (tabId, info, tab) => /^https?:/.test(info.url) && findTab([tab]);
 findTab();
 chrome.runtime.onConnect.addListener(port => {
