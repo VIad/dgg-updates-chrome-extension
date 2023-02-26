@@ -31,6 +31,10 @@ docId("dgg").addEventListener("click", () => {
     chrome.tabs.create({ url: "https://destiny.gg" })
 })
 
+docId("twitter").addEventListener("click", () => {
+    chrome.tabs.create({ url: "https://twitter.com/TheOmniLiberal" })
+})
+
 docId("reddit").addEventListener("click", () => {
     chrome.tabs.create({ url: "https://reddit.com/r/Destiny" })
 })
