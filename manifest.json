@@ -1,6 +1,6 @@
 {
   "name": "Destiny.gg Status",
-  "version": "2022.12.1",
+  "version": "2023.2.1",
   "description": "Live status tracker for the livestreamer Destiny",
   "manifest_version": 3,
   "action": {
