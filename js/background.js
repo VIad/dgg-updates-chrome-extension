@@ -42,7 +42,6 @@ let fetchStatus = async (isInitial) => {
           })
       }
     })
-
 }
 
 let shouldUpdate = (lastUpdated, isInitial) => {
@@ -181,6 +180,7 @@ chrome.tabs.onActivated.addListener(async info => {
     .then(result => {
       if (shouldRestart(result['lastUpdated'])) {
         chrome.runtime.reload()
+        chrome.storage.local.set({ lastUpdated: new Date().getTime() }, () => { })
       }
       if (shouldRebootAlarm(result['lastAlarmUpdate'])) {
         chrome.alarms.clearAll().then(() => {
